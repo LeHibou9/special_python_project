@@ -71,8 +71,23 @@ def generate_TS_frame(dt_start, dt_end, timezone='Europe/Paris', frequency='H', 
     else:
         print('Ouptut type ' + output + ' unknown.')
     
-
-
+def switch_granularity(df_in, granularity, method = 'ffill'):
+    """ tranform one dataframe timeserie index granularity"""
+    
+    agg_method = ['ffill','bfill','mean','sum','min','max']
+    interpol_method = ['linear']
+    
+    if method in agg_method:
+        df_resampled = df_in.resample(granularity).agg(method)
+    elif method in interpol_method:
+        df_resampled = df_in.resample(granularity).interpolate(method)
+    else:
+        print('Sorry method ' + method + ' unknown.')
+        df_resampled = df_in.resample(granularity).asfreq()
+        
+    return df_resampled
+    
+    
 
 if __name__ == "__main__":
 
@@ -89,3 +104,8 @@ if __name__ == "__main__":
     
     df_error = generate_TS_frame(dtime.datetime(day=1,month=1,year=2020),dtime.datetime(day=1,month=1,year=2025),
                              frequency='1h', output='SoupeAuxChoux')
+    
+    df2['Test_Range'] = range(df2.shape[0])
+    
+    df2_RS_large = switch_granularity(df2, '1min','sum')
+    df2_RS_small = switch_granularity(df2, '10s','linear')
