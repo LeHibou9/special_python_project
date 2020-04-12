@@ -22,7 +22,7 @@ def generate_TS_periods(dt_start, per, timezone='Europe/Paris', frequency='H', o
     dti_zone = dti.tz_localize(tz='UTC').tz_convert(tz=timezone)
     
     # Extract timestamp & offset info of the requested timezone serie
-    timestamp_zone =pd.to_datetime([str(dt)[0:19] for dt in dti_zone],format='%Y-%m-%d %H:%M')
+    timestamp_zone =pd.to_datetime([str(dt)[0:19] for dt in dti_zone],format='%Y-%m-%d %H:%M:%S')
     offset_zone =[int(str(dt)[-4]) for dt in dti_zone]
     
     # Slice the series to keep only dates >= dt_start and the requested number of periods
@@ -109,3 +109,8 @@ if __name__ == "__main__":
     
     df2_RS_large = switch_granularity(df2, '1min','sum')
     df2_RS_small = switch_granularity(df2, '10s','linear')
+    
+    df_test = pd.read_csv('../../data/MarketData/ETFs/aadr.us.txt')
+    df_test['Date'] = pd.to_datetime(df_test['Date'],format='%Y-%m-%d %H:%M')
+    df_test.set_index('Date',inplace=True)
+    df_test_RS = switch_granularity(df_test,'MS','mean')
