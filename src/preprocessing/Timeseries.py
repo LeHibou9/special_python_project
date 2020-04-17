@@ -12,6 +12,7 @@ from itertools import compress
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+
 def generate_TS_periods(dt_start, per, timezone='Europe/Paris', frequency='H', output='tuple'):
     """ generate a timeserie starting at a defined timestamp, with detailed periods, timezone & frequency.
     Return a tuple containing (serie of timestamps, serie of offset) """
@@ -22,8 +23,8 @@ def generate_TS_periods(dt_start, per, timezone='Europe/Paris', frequency='H', o
     dti_zone = dti.tz_localize(tz='UTC').tz_convert(tz=timezone)
     
     # Extract timestamp & offset info of the requested timezone serie
-    timestamp_zone =pd.to_datetime([str(dt)[0:19] for dt in dti_zone],format='%Y-%m-%d %H:%M:%S')
-    offset_zone =[int(str(dt)[-4]) for dt in dti_zone]
+    timestamp_zone = pd.to_datetime([str(dt)[0:19] for dt in dti_zone],format='%Y-%m-%d %H:%M:%S')
+    offset_zone = [int(str(dt)[-4]) for dt in dti_zone]
     
     # Slice the series to keep only dates >= dt_start and the requested number of periods
     loc_target = timestamp_zone>=dt_start
@@ -42,6 +43,7 @@ def generate_TS_periods(dt_start, per, timezone='Europe/Paris', frequency='H', o
     
     else:
         print('Ouptut type ' + output + ' unknown.')
+
 
 def generate_TS_frame(dt_start, dt_end, timezone='Europe/Paris', frequency='H', output='tuple'):
     """ generate a timeserie on the defined timezone, with detailed frequency """
@@ -70,7 +72,8 @@ def generate_TS_frame(dt_start, dt_end, timezone='Europe/Paris', frequency='H', 
     
     else:
         print('Ouptut type ' + output + ' unknown.')
-    
+
+
 def switch_granularity(df_in, granularity, method = 'ffill'):
     """ tranform one dataframe timeserie index granularity"""
     
@@ -87,11 +90,10 @@ def switch_granularity(df_in, granularity, method = 'ffill'):
         
     return df_resampled
     
-    
 
 if __name__ == "__main__":
 
-    [ts_1H,offset] = generate_TS_periods(dtime.datetime(day=1,month=1,year=2020), 366*24)
+    [ts_1H, offset] = generate_TS_periods(dtime.datetime(day=1, month=1, year=2020), 366*24)
     
     df1 = generate_TS_periods(dtime.datetime(day=1,month=1,year=2020),
                              366*24*4, frequency='15min', output='dataframe')
